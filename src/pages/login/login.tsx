@@ -8,7 +8,6 @@ import { useAuthStore } from '../../store';
 import { usePermission } from '../../hooks/usePermission';
 
 const loginUser = async (credentials: Credentials) => {
-    // server call logic
     const { data } = await login(credentials);
     return data;
 };
@@ -19,40 +18,36 @@ const getSelf = async () => {
 };
 
 const LoginPage = () => {
-    const {isAllowed} = usePermission();
+    const { isAllowed } = usePermission();
     const { setUser, logout: logoutFromStore } = useAuthStore();
 
-    const {  refetch } = useQuery({
+    const { refetch } = useQuery({
         queryKey: ['self'],
         queryFn: getSelf,
         enabled: false,
     });
 
-    const {mutate: logoutMutate} = useMutation({
-        mutationKey:['logout'],
+    const { mutate: logoutMutate } = useMutation({
+        mutationKey: ['logout'],
         mutationFn: logout,
         onSuccess: async () => {
             logoutFromStore();
             return;
-        }
-    })
+        },
+    });
 
     const { mutate, isPending, isError, error } = useMutation({
         mutationKey: ['login'],
         mutationFn: loginUser,
         onSuccess: async () => {
             const selfDataPromise = await refetch();
-            //loguot or redirect to client UI
-            //admin , manager, customer
-            if(!isAllowed(selfDataPromise.data)){
+            // logout or redirect to client ui
+            // window.location.href = "http://clientui/url"
+            // "admin", "manager", "customer"
+            if (!isAllowed(selfDataPromise.data)) {
                 logoutMutate();
                 return;
             }
-            // if(selfDataPromise.data.role === "customer"){
-            //     await logout();
-            //     logoutFromStore();
-            //     return;
-            // }
             setUser(selfDataPromise.data);
         },
     });

@@ -12,7 +12,7 @@ export const api = axios.create({
 
 const refreshToken = async () => {
     await axios.post(
-        `${import.meta.env.VITE_BACKEND_API_URL}auth/refresh`,
+        `${import.meta.env.VITE_BACKEND_API_URL}/auth/refresh`,
         {},
         {
             withCredentials: true,

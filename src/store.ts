@@ -6,6 +6,7 @@ export interface User {
     lastName: string;
     email: string;
     role: string;
+    tenant: null | string
 }
 
 interface AuthState {

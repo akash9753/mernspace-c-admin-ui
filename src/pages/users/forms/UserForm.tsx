@@ -3,13 +3,17 @@ import { getTenants } from '../../../http/api';
 import { useQuery } from '@tanstack/react-query';
 import { Tenant } from '../../../types';
 
-const UserForm = () => {
+const UserForm = ({ isEditMode = false }: { isEditMode: boolean }) => {
     const { data: tenants } = useQuery({
         queryKey: ['tenants'],
         queryFn: () => {
+            // TODO: make this dynamic, like search for tenants in the input
             return getTenants().then((res) => res.data);
         },
     });
+
+    console.log(tenants);
+    
 
     return (
         <Row>
@@ -62,24 +66,25 @@ const UserForm = () => {
                             </Col>
                         </Row>
                     </Card>
-
-                    <Card title="Security info" bordered={false}>
-                        <Row gutter={20}>
-                            <Col span={12}>
-                                <Form.Item
-                                    label="Passoword"
-                                    name="password"
-                                    rules={[
-                                        {
-                                            required: true,
-                                            message: 'Password required',
-                                        },
-                                    ]}>
-                                    <Input size="large" type="password" />
-                                </Form.Item>
-                            </Col>
-                        </Row>
-                    </Card>
+                    {!isEditMode && (
+                        <Card title="Security info" bordered={false}>
+                            <Row gutter={20}>
+                                <Col span={12}>
+                                    <Form.Item
+                                        label="Passoword"
+                                        name="password"
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message: 'Password required',
+                                            },
+                                        ]}>
+                                        <Input size="large" type="password" />
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                        </Card>
+                    )}
 
                     <Card title="Role" bordered={false}>
                         <Row gutter={20}>
@@ -94,6 +99,7 @@ const UserForm = () => {
                                         },
                                     ]}>
                                     <Select
+                                        id="selectBoxInUserForm"
                                         size="large"
                                         style={{ width: '100%' }}
                                         allowClear={true}
